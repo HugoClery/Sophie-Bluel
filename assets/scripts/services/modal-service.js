@@ -153,10 +153,15 @@ const openFileExplorer = () => {
   const fileInput = document.getElementById("form-image");
 
   if (newImageButton && fileInput) {
-    fileInput.addEventListener("click", (event) => {
+    console.log("new-image button and form-image input found");
+    const newImageClone = newImageButton.cloneNode(true);
+    newImageButton.parentNode.replaceChild(newImageClone, newImageButton);
+    newImageButton = newImageClone;
+
+    newImageButton.addEventListener("click", (event) => {
       console.log("click detected on new-image");
       event.preventDefault();
-      fileInput.click();
+      fileInput.click(); // Ouvre l'explorateur de fichiers
     });
   } else {
     console.error("new-image button or form-image input not found");
@@ -169,7 +174,6 @@ export const openSecondModalOnClick = () => {
     .getElementById("modal-edit-add")
     .addEventListener("click", function (event) {
       event.preventDefault();
-      event.stopPropagation(); // Arrêter la propagation de l'événement
       let modalWorks = document.getElementById("modal-works");
       let modalEdit = document.getElementById("modal-edit");
       modalWorks.classList.remove("show-block");
@@ -179,7 +183,6 @@ export const openSecondModalOnClick = () => {
       openFileExplorer();
     });
 };
-
 // Retourner à la première fenêtre du modal avec la flèche
 export const returnToFirstModalOnClick = () => {
   document
