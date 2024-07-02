@@ -32,3 +32,13 @@ export async function deleteWork(workId) {
   });
   return { status: response.status, ok: response.ok };
 }
+export async function addNewWork(formData) {
+  const response = await fetch(urlApi + "works", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+    body: formData,
+  });
+  return response;
+}
