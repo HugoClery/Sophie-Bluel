@@ -41,6 +41,7 @@ const handleErrorResponse = async (response) => {
     alertNetworkError();
   } else {
     alertHttpError(response.status);
+    console.error("error", response);
   }
 };
 
@@ -60,3 +61,38 @@ const alertHttpError = (statusCode) => {
 function showAlertServerError() {
   alert("Erreur côté serveur!");
 }
+
+export const toggleFilters = () => {
+  const filters = document.getElementById("all-filters");
+  if (localStorage.getItem("token")) {
+    filters.classList.add("hidden"); // Cache les filtres si l'utilisateur est connecté
+  } else {
+    filters.classList.add("show-flex"); // Affiche les filtres si l'utilisateur est déconnecté
+  }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Vérification de l'état de connexion
+  if (localStorage.getItem("token") && localStorage.getItem("userId")) {
+    document.querySelector("body").classList.add("connected");
+    let topBar = document.getElementById("top-bar");
+    topBar.classList.add("show-flex");
+    document.getElementById("all-filters").classList.add("hidden");
+    let space = document.getElementById("space-only-admin");
+    space.classList.add("padding-admin");
+  } else {
+    document.querySelector("body").classList.remove("connected");
+  }
+
+  // Gestionnaire d'événement pour la déconnexion
+  const logoutButton = document.getElementById("nav-logout");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
+      toggleFilters();
+      window.location.reload();
+    });
+  }
+});

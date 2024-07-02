@@ -3,7 +3,7 @@
 import { getWorks, getCategories } from "../api.js";
 
 const listAllWorks = (works) => {
-  works.forEach((work, index) => {
+  works.forEach((work) => {
     let myFigure = document.createElement(`figure`);
     myFigure.setAttribute(
       "class",
@@ -23,7 +23,7 @@ const listAllWorks = (works) => {
 
 const listAllCategories = (categories) => {
   categories.unshift({ id: 0, name: "Tous" });
-  categories.forEach((category, index) => {
+  categories.forEach((category) => {
     let myButton = document.createElement("button");
     myButton.classList.add("work-filter", "filters-design");
     if (category.id === 0)
