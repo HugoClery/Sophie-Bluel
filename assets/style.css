@@ -251,7 +251,6 @@ input[type="submit"] {
   width: 180px;
   text-align: center;
   border-radius: 60px;
-  background-color: #1d6154;
 }
 
 footer nav ul {
@@ -704,6 +703,7 @@ select {
   align-items: center;
   justify-content: center;
   display: flex;
+  width: auto;
 }
 
 .hidden {
