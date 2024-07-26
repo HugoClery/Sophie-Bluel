@@ -3,9 +3,9 @@ import { getlogin } from "../api.js";
 
 export const login = async () => {
   document.addEventListener("DOMContentLoaded", function () {
-    document
-      .getElementById("user-login-form")
-      .addEventListener("submit", async function (event) {
+    const form = document.getElementById("user-login-form");
+    if (form) {
+      document.addEventListener("submit", async function (event) {
         event.preventDefault();
         document.getElementById("error-message").textContent = "";
 
@@ -19,6 +19,7 @@ export const login = async () => {
           showAlertServerError();
         }
       });
+    }
   });
 };
 

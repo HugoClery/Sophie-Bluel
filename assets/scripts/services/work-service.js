@@ -2,7 +2,7 @@
 
 import { getWorks, getCategories } from "../api.js";
 
-const listAllWorks = (works) => {
+export const listAllWorks = (works) => {
   works.forEach((work) => {
     let myFigure = document.createElement(`figure`);
     myFigure.setAttribute(

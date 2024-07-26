@@ -1,31 +1,23 @@
 // @ts-nocheck
 import { getWorks, deleteWork, getCategories, addNewWork } from "../api.js";
+// import { listAllWorks } from "./work-service.js";
 
 // Fonction pour gérer la suppression d'un travail
 const handleDeleteWork = async (work, myFigure) => {
   try {
     const response = await deleteWork(work.id);
-    switch (response.status) {
-      case 200:
-      case 204:
-        console.log("Projet supprimé.");
+    if (response.ok) {
+      console.log("Projet supprimé.");
+      if (myFigure) {
         myFigure.remove();
-        console.log(`work-item-${work.id}`);
-        document.getElementById(`work-item-popup-${work.id}`).remove();
-        console.log(`work-item-popup-${work.id}`);
-        break;
-      case 401:
-        alert("Suppression impossible!");
-        break;
-      case 500:
-      case 503:
-        alert("Comportement inattendu!");
-        break;
-      default:
-        alert("Erreur inconnue!");
-        break;
+      }
+      console.log(`work-item-${work.id}`);
+      const popupElement = document.getElementById(
+        `work-item-popup-${work.id}`
+      );
     }
   } catch (error) {
+    console.log(error.message);
     console.error("Erreur lors de la suppression du travail:", error);
     alert("Erreur réseau!");
   }
@@ -56,7 +48,7 @@ const displayWorksInModal = (works) => {
     // Gestion de la suppression
     trashIcon.addEventListener("click", async function (event) {
       event.preventDefault();
-      handleDeleteWork(work, myFigure);
+      await handleDeleteWork(work, myFigure);
     });
     modalContent.appendChild(myFigure);
   });
@@ -83,6 +75,7 @@ export const displayModalOnClick = () => {
 };
 
 const resetEditModalForm = () => {
+  console.log("resetEditModalForm");
   // Réinitialiser tout le formulaire dans l'édition de la modale
   // Supprimer l'image si elle existe
   if (document.getElementById("form-image-preview") != null) {
@@ -108,7 +101,7 @@ const resetEditModalForm = () => {
 export const closeModalOnClick = () => {
   // Fermer les deux fenêtres modales avec un clic extérieur
   document.getElementById("modal").addEventListener("click", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
     let modal = document.getElementById("modal");
     let modalWorks = document.getElementById("modal-works");
     let modalEdit = document.getElementById("modal-edit");
@@ -147,40 +140,19 @@ export const closeModalOnClick = () => {
     });
 };
 
-// Fonction pour gérer l'ouverture de l'explorateur de fichiers
-const openFileExplorer = () => {
-  const newImageButton = document.getElementById("new-image");
-  const fileInput = document.getElementById("form-image");
-
-  if (newImageButton && fileInput) {
-    console.log("new-image button and form-image input found");
-    const newImageClone = newImageButton.cloneNode(true);
-    newImageButton.parentNode.replaceChild(newImageClone, newImageButton);
-    newImageButton = newImageClone;
-
-    newImageButton.addEventListener("click", (event) => {
-      console.log("click detected on new-image");
-      event.preventDefault();
-      fileInput.click(); // Ouvre l'explorateur de fichiers
-    });
-  } else {
-    console.error("new-image button or form-image input not found");
-  }
-};
-
 // Ouverture deuxième fenêtre de modale avec le bouton "Ajouter photo"
 export const openSecondModalOnClick = () => {
   document
     .getElementById("modal-edit-add")
     .addEventListener("click", function (event) {
+      console.log("click detected on modal-edit-add");
       event.preventDefault();
       let modalWorks = document.getElementById("modal-works");
       let modalEdit = document.getElementById("modal-edit");
       modalWorks.classList.remove("show-block");
       modalEdit.classList.add("show-block");
 
-      // Appeler la fonction pour gérer l'ouverture de l'explorateur de fichiers
-      openFileExplorer();
+      // openFileExplorer();
     });
 };
 // Retourner à la première fenêtre du modal avec la flèche
@@ -204,12 +176,14 @@ export const populateCategories = async () => {
   try {
     const categories = await getCategories();
     categories.forEach((category) => {
-      // Création de <option> dans l'édition de la modale
-      let myOption = document.createElement("option");
-      myOption.setAttribute("value", category.id);
-      myOption.textContent = category.name;
-      // Ajout du nouveau <option> dans la catégorie select.choice-category
-      document.querySelector("select.choice-category").appendChild(myOption);
+      if (category.id && category.name) {
+        // Création de <option> dans l'édition de la modale
+        let myOption = document.createElement("option");
+        myOption.setAttribute("value", category.id);
+        myOption.textContent = category.name;
+        // Ajout du nouveau <option> dans la catégorie select.choice-category
+        document.querySelector("select.choice-category").appendChild(myOption);
+      }
     });
   } catch (err) {
     console.log(err);
