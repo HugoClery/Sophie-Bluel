@@ -3,6 +3,9 @@
 import { getWorks, getCategories } from "../api.js";
 
 export const listAllWorks = (works) => {
+  const gallery = document.querySelector("div.gallery");
+  gallery.innerHTML = ""; // Vider le conteneur avant d'ajouter de nouveaux éléments
+
   works.forEach((work) => {
     let myFigure = document.createElement(`figure`);
     myFigure.setAttribute(
@@ -17,7 +20,7 @@ export const listAllWorks = (works) => {
     const myFigcaption = document.createElement("figcaption");
     myFigcaption.textContent = work.title;
     myFigure.appendChild(myFigcaption);
-    document.querySelector("div.gallery").appendChild(myFigure);
+    gallery.appendChild(myFigure);
   });
 };
 

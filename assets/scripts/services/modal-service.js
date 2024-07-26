@@ -1,24 +1,28 @@
 // @ts-nocheck
 import { getWorks, deleteWork, getCategories, addNewWork } from "../api.js";
-// import { listAllWorks } from "./work-service.js";
+import { listAllWorks } from "./work-service.js";
 
 // Fonction pour gérer la suppression d'un travail
 const handleDeleteWork = async (work, myFigure) => {
   try {
     const response = await deleteWork(work.id);
     if (response.ok) {
-      console.log("Projet supprimé.");
       if (myFigure) {
         myFigure.remove();
       }
-      console.log(`work-item-${work.id}`);
+
       const popupElement = document.getElementById(
         `work-item-popup-${work.id}`
       );
+      if (popupElement) {
+        popupElement.remove();
+      }
+
+      // Rafraîchir la liste des travaux sur la page d'accueil
+      const updatedWorks = await getWorks(); // Récupérer la liste mise à jour des travaux
+      listAllWorks(updatedWorks); // Afficher la liste mise à jour des travaux
     }
   } catch (error) {
-    console.log(error.message);
-    console.error("Erreur lors de la suppression du travail:", error);
     alert("Erreur réseau!");
   }
 };
@@ -75,7 +79,6 @@ export const displayModalOnClick = () => {
 };
 
 const resetEditModalForm = () => {
-  console.log("resetEditModalForm");
   // Réinitialiser tout le formulaire dans l'édition de la modale
   // Supprimer l'image si elle existe
   if (document.getElementById("form-image-preview") != null) {
@@ -145,7 +148,6 @@ export const openSecondModalOnClick = () => {
   document
     .getElementById("modal-edit-add")
     .addEventListener("click", function (event) {
-      console.log("click detected on modal-edit-add");
       event.preventDefault();
       let modalWorks = document.getElementById("modal-works");
       let modalEdit = document.getElementById("modal-edit");
@@ -185,8 +187,8 @@ export const populateCategories = async () => {
         document.querySelector("select.choice-category").appendChild(myOption);
       }
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -217,7 +219,6 @@ export const handleFormSubmission = () => {
             break;
           case 200:
           case 201:
-            console.log("Projet ajouté avec succès!");
             const json = await response.json();
             // Création d'un élément HTML
             // Création de <figure>
@@ -252,8 +253,8 @@ export const handleFormSubmission = () => {
             alert("Erreur inconnue!");
             break;
         }
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        console.log(error);
       }
     });
 };
