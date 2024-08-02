@@ -247,10 +247,17 @@ input[type="submit"] {
   font-family: "Syne";
   font-weight: 700;
   color: white;
+  background-color: #1d6154;
   margin: 2em auto;
   width: 180px;
   text-align: center;
   border-radius: 60px;
+}
+
+input[type="submit"]:disabled {
+  background-color: #a7a7a7;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 footer nav ul {
@@ -718,14 +725,11 @@ select {
   height: 169px;
   width: 100%;
   image-rendering: pixelated;
+  object-fit: contain;
 }
 
 #modal-edit-work-form .no-padding {
   padding: 0;
-}
-
-.button-inactive {
-  background-color: #a7a7a7;
 }
 
 .button-active {

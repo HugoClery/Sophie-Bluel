@@ -1,5 +1,5 @@
 import { init } from "./services/work-service.js";
-import { login, toggleFilters } from "./services/login-service.js";
+import { handleAuthenticatedUser, login } from "./services/login-service.js";
 import {
   displayModalOnClick,
   closeModalOnClick,
@@ -13,7 +13,6 @@ import {
 
 init();
 login();
-toggleFilters();
 displayModalOnClick();
 closeModalOnClick();
 openSecondModalOnClick();
@@ -22,3 +21,4 @@ populateCategories();
 handleFormSubmission();
 checkImageSize();
 linkCheckNewProjectFields();
+handleAuthenticatedUser();

@@ -18,9 +18,8 @@ const handleDeleteWork = async (work, myFigure) => {
         popupElement.remove();
       }
 
-      // Rafraîchir la liste des travaux sur la page d'accueil
-      const updatedWorks = await getWorks(); // Récupérer la liste mise à jour des travaux
-      listAllWorks(updatedWorks); // Afficher la liste mise à jour des travaux
+      const updatedWorks = await getWorks();
+      listAllWorks(updatedWorks);
     }
   } catch (error) {
     alert("Erreur réseau!");
@@ -80,31 +79,42 @@ export const displayModalOnClick = () => {
 
 const resetEditModalForm = () => {
   // Réinitialiser tout le formulaire dans l'édition de la modale
+  document.getElementById("modal-edit-work-form").reset();
+
   // Supprimer l'image si elle existe
   if (document.getElementById("form-image-preview") != null) {
     document.getElementById("form-image-preview").remove();
   }
-  // Revenir à la conception originale du formulaire
-  document.getElementById("modal-edit-work-form").reset();
+
+  // Réinitialiser le champ de sélection de la catégorie au champ vide
+  let categorySelect = document.getElementById("form-category");
+  if (categorySelect) {
+    categorySelect.selectedIndex = 0;
+  }
+
+  // Réinitialiser l'affichage de la modal
   let iconNewPhoto = document.getElementById("photo-add-icon");
   iconNewPhoto.classList.remove("hidden");
   iconNewPhoto.classList.add("block");
+
   let buttonNewPhoto = document.getElementById("new-image");
   buttonNewPhoto.classList.remove("hidden");
-  buttonNewPhoto.classList.add("block"); // Ajout de la classe pour afficher le bouton
+  buttonNewPhoto.classList.add("block");
+
   let photoMaxSize = document.getElementById("photo-size");
   photoMaxSize.classList.remove("hidden");
-  photoMaxSize.classList.add("block"); // Ajout de la classe pour afficher la taille de la photo
+  photoMaxSize.classList.add("block");
+
   let modalEditPhoto = document.getElementById("modal-edit-new-photo");
   modalEditPhoto.classList.remove("no-padding");
   modalEditPhoto.classList.add("modal-edit-padding");
-  document.getElementById("submit-new-work").classList.add("button-inactive");
+
+  document.getElementById("submit-new-work").disabled = true; // Réinitialiser le bouton de soumission à désactivé
 };
 
 export const closeModalOnClick = () => {
   // Fermer les deux fenêtres modales avec un clic extérieur
   document.getElementById("modal").addEventListener("click", function (event) {
-    // event.preventDefault();
     let modal = document.getElementById("modal");
     let modalWorks = document.getElementById("modal-works");
     let modalEdit = document.getElementById("modal-edit");
@@ -153,8 +163,6 @@ export const openSecondModalOnClick = () => {
       let modalEdit = document.getElementById("modal-edit");
       modalWorks.classList.remove("show-block");
       modalEdit.classList.add("show-block");
-
-      // openFileExplorer();
     });
 };
 // Retourner à la première fenêtre du modal avec la flèche
@@ -163,7 +171,7 @@ export const returnToFirstModalOnClick = () => {
     .getElementById("arrow-return")
     .addEventListener("click", function (event) {
       event.preventDefault();
-      event.stopPropagation(); // Arrêter la propagation de l'événement
+      event.stopPropagation();
       let modalEdit = document.getElementById("modal-edit");
       let modalWorks = document.getElementById("modal-works");
       modalEdit.classList.remove("show-block");
@@ -176,6 +184,15 @@ export const returnToFirstModalOnClick = () => {
 // Fetch pour ajouter des options de catégorie dans la modification modale
 export const populateCategories = async () => {
   try {
+    const categorySelect = document.querySelector("select.choice-category");
+
+    let defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "";
+    defaultOption.disabled = true; // Empêche la sélection de cette option une fois que l'utilisateur a choisi une autre catégorie
+    defaultOption.selected = true; // Sélectionne cette option par défaut
+    categorySelect.appendChild(defaultOption);
+
     const categories = await getCategories();
     categories.forEach((category) => {
       if (category.id && category.name) {
@@ -312,15 +329,14 @@ function checkNewProjectFields() {
   let category = document.getElementById("form-category");
   let image = document.getElementById("form-image");
   let submitWork = document.getElementById("submit-new-work");
+
   if (
     title.value.trim() === "" ||
     category.value.trim() === "" ||
     image.files.length === 0
   ) {
-    submitWork.classList.add("button-inactive");
-    submitWork.classList.remove("button-active");
+    submitWork.disabled = true; // Désactive le bouton si tous les champs ne sont pas remplis
   } else {
-    submitWork.classList.add("button-active");
-    submitWork.classList.remove("button-inactive");
+    submitWork.disabled = false; // Active le bouton si tous les champs sont remplis
   }
 }
